@@ -1,0 +1,23 @@
+# 本地密钥与数据，绝不提交
+.env
+data/
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# 导出物
+mcp_tools.json
+screenshots/*.tmp
+screenshots/*.log
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

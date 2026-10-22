@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>燃麦日历 · 动了就好好吃</title>
+  <meta name="description" content="把运动消耗、热量预算、麦当劳套餐推荐和优惠券算在一起的本地日历" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">燃麦</div>
+        <div>
+          <h1>燃麦日历</h1>
+          <p>今天动了多少，就好好吃回来</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="modeBadge" class="badge">演示数据</span>
+        <button id="todayBtn" class="ghost hidden">回到今天</button>
+        <button id="syncBtn" class="ghost">同步真实数据</button>
+        <button id="settingsBtn" class="ghost">我的资料</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card calendar-card">
+        <div class="card-head">
+          <button id="prevMonth" class="icon-btn" aria-label="上个月">‹</button>
+          <h2 id="monthLabel">—</h2>
+          <button id="nextMonth" class="icon-btn" aria-label="下个月">›</button>
+        </div>
+        <div class="weekdays">
+          <span>一</span><span>二</span><span>三</span><span>四</span>
+          <span>五</span><span>六</span><span>日</span>
+        </div>
+        <div id="calendar" class="calendar"></div>
+        <div id="monthSummary" class="month-summary"></div>
+        <p class="hint">点击任意一天，查看当天的运动、消费与热量。</p>
+      </section>
+
+      <section class="card today-card">
+        <div class="card-head">
+          <h2 id="todayTitle">今天</h2>
+          <span id="streakBadge" class="pill">—</span>
+        </div>
+
+        <div class="budget">
+          <div class="donut-wrap">
+            <svg class="donut" viewBox="0 0 132 132" aria-hidden="true">
+              <circle class="donut-bg" cx="66" cy="66" r="56"></circle>
+              <circle id="donutFg" class="donut-fg" cx="66" cy="66" r="56"></circle>
+            </svg>
+            <div class="donut-center">
+              <div>
+                <b id="remainingKcal">—</b>
+                <span>还能吃 kcal</span>
+              </div>
+            </div>
+          </div>
+          <div class="budget-meta">
+            <div class="headline" id="budgetHeadline">正在计算…</div>
+            <div class="macro-row" id="macroRow"></div>
+            <div class="sub" id="budgetSub"></div>
+          </div>
+        </div>
+
+        <div class="stat-row" id="statRow"></div>
+
+        <div class="section-title">
+          运动记录 <span id="exerciseKcal" class="muted small"></span>
+        </div>
+        <div class="exercise-form">
+          <select id="exerciseKind"></select>
+          <input id="exerciseMinutes" type="number" min="5" max="600" step="5" value="30" />
+          <button id="addExercise" class="primary">记录</button>
+        </div>
+        <ul id="exerciseList" class="list"></ul>
+
+        <div class="section-title">这天吃了什么</div>
+        <ul id="mealList" class="list"></ul>
+
+        <div id="campaigns" class="campaigns"></div>
+      </section>
+    </main>
+
+    <section class="reco-section">
+      <div class="reco-head">
+        <h2>今日推荐</h2>
+        <p id="recoNote" class="muted"></p>
+      </div>
+      <div id="recoCards" class="reco-grid"></div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <div class="section-title">你的口味画像</div>
+        <div id="tasteChips" class="chips"></div>
+        <p id="tasteMeta" class="muted small"></p>
+      </div>
+      <div class="card">
+        <div class="section-title">可用优惠券</div>
+        <ul id="couponList" class="list"></ul>
+      </div>
+    </section>
+
+    <footer class="foot">
+      燃麦日历 · 本地运行，MCP Token 与订单数据只存在你自己的电脑上。<br />
+      餐品营养来自麦当劳 MCP，价格为参考价或门店实时价，以门店为准；
+      本工具不构成医疗、营养或其他专业建议。
+    </footer>
+  </div>
+
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>我的资料</h2>
+      <p>用于计算基础代谢与每日热量预算，数据只存在本机。</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>昵称</label>
+          <input id="pNickname" type="text" maxlength="20" />
+        </div>
+        <div class="form-row">
+          <label>性别</label>
+          <select id="pSex">
+            <option value="female">女</option>
+            <option value="male">男</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>年龄</label>
+          <input id="pAge" type="number" min="14" max="90" />
+        </div>
+        <div class="form-row">
+          <label>身高 (cm)</label>
+          <input id="pHeight" type="number" min="120" max="230" step="0.5" />
+        </div>
+        <div class="form-row">
+          <label>体重 (kg)</label>
+          <input id="pWeight" type="number" min="30" max="250" step="0.5" />
+        </div>
+        <div class="form-row">
+          <label>日常活动量</label>
+          <select id="pActivity">
+            <option value="1.2">久坐</option>
+            <option value="1.375">轻度活动</option>
+            <option value="1.55">中度活动</option>
+            <option value="1.725">高强度</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>每日热量缺口 (kcal)</label>
+          <input id="pDeficit" type="number" min="0" max="1000" step="50" />
+        </div>
+        <div class="form-row">
+          <label>每公斤体重蛋白质 (g)</label>
+          <input id="pProtein" type="number" min="0.8" max="3" step="0.1" />
+        </div>
+      </div>
+      <div class="disclaimer">
+        预算不会低于基础代谢，也不低于通用最低摄入（女性 1200 / 男性 1500 kcal），
+        避免给出不安全的目标。所有建议仅供参考。
+      </div>
+      <div class="modal-actions">
+        <button id="cancelSettings" class="ghost">取消</button>
+        <button id="saveSettings" class="primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

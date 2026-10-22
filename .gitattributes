@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# 参赛声明必须与官方文件逐字一致，禁止任何换行转换
+CONTEST_DECLARATION.md -text
