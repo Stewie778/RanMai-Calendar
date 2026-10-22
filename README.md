@@ -4,6 +4,8 @@
 
 一个跑在你自己电脑上的「麦当劳 × 健身减脂」日历。它读取你的运动消耗，算出今天还能吃多少，再用麦当劳官方 MCP 数据为你搭配套餐、比价用券，并从每一次点单里学习你的口味。
 
+> ⭐ 如果这个项目让你少算了一次热量，欢迎点个 Star，帮我冲进麦当劳开发者大赛前 100。
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![MCP](https://img.shields.io/badge/McDonald's%20MCP-mcp.mcd.cn-DA291C)](https://open.mcd.cn/mcp)
